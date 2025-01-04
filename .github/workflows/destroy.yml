@@ -1,0 +1,17 @@
+name: 'Destroy Terraform Deployment'
+
+on:
+  push:
+    branches:
+      - nope
+  pull_request_target:
+    branches:
+      - nope
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
