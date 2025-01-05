@@ -43,9 +43,9 @@ variable "subnet_address_prefix" {
   default     = "10.10.8.0/22"
 }
 
-###################
-# Database login  #
-###################
+##################
+# Database info  #
+##################
 
 variable "db_username" {
   type        = string
@@ -57,5 +57,10 @@ variable "db_password" {
   type        = string
   description = "value of the Azure database password"
   sensitive   = true
+}
+
+variable "db_name" {
+  type        = string
+  description = "value of the Azure database name"
 }
 

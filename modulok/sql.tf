@@ -1,7 +1,18 @@
+resource "azurerm_resource_group" "db" {
+  name     = "adatbazis-${var.modules_resource_group_name}"
+  location = var.location
+  tags = {
+    protected = "Yes"
+    owner     = "CloudMentor"
+    purpose   = "Educational"
+    type      = "Modulok"
+  }
+}
+
 resource "azurerm_mssql_server" "sql_server" {
-  name                         = "${var.modules_resource_group_name}-sql"
+  name                         = "${var.main_resource_group_name}-sql"
   location                     = var.location
-  resource_group_name          = var.modules_resource_group_name
+  resource_group_name          = azurerm_resource_group.db.name
   version                      = "12.0"
   administrator_login          = var.db_username
   administrator_login_password = var.db_password
@@ -16,7 +27,7 @@ resource "azurerm_mssql_server" "sql_server" {
 }
 
 resource "azurerm_mssql_database" "database" {
-  name                        = "webshop"
+  name                        = var.db_name
   server_id                   = azurerm_mssql_server.sql_server.id
   collation                   = "SQL_Latin1_General_CP1_CI_AS"
   auto_pause_delay_in_minutes = 60

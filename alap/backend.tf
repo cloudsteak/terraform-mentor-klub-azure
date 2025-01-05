@@ -4,7 +4,7 @@ terraform {
     resource_group_name  = "tfstate"
     storage_account_name = "tfstate21526"
     container_name       = "tfstate"
-    key                  = "permanent/terraform.tfstate"
+    key                  = "alap/terraform.tfstate"
   }
 }
 

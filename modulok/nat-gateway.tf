@@ -1,8 +1,19 @@
+resource "azurerm_resource_group" "halozat" {
+  name     = "halozat-${var.modules_resource_group_name}"
+  location = var.location
+  tags = {
+    protected = "Yes"
+    owner     = "CloudMentor"
+    purpose   = "Educational"
+    type      = "Modulok"
+  }
+}
+
 # Public IP for NAT Gateway
 resource "azurerm_public_ip" "nat_gw_pip" {
-  name                = "${var.modules_resource_group_name}-nat-gw-pip"
+  name                = "${var.main_resource_group_name}-nat-gw-pip"
   location            = var.location
-  resource_group_name = var.modules_resource_group_name
+  resource_group_name = azurerm_resource_group.halozat.name
   allocation_method   = "Static"
   sku                 = "Standard"
   tags = {
@@ -15,9 +26,9 @@ resource "azurerm_public_ip" "nat_gw_pip" {
 
 # NAT Gateway
 resource "azurerm_nat_gateway" "nat_gw" {
-  name                    = "${var.modules_resource_group_name}-nat-gw"
+  name                    = "${var.main_resource_group_name}-nat-gw"
   location                = var.location
-  resource_group_name     = var.modules_resource_group_name
+  resource_group_name     = azurerm_resource_group.halozat.name
   sku_name                = "Standard"
   idle_timeout_in_minutes = 10
   tags = {
