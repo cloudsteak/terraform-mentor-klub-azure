@@ -1,5 +1,5 @@
 resource "azurerm_storage_account" "primary_sa" {
-  name                     = "${var.resource_group_name}sa"
+  name                     = "${var.main_resource_group_name}sa"
   location                 = azurerm_resource_group.mentorklub.location
   resource_group_name      = azurerm_resource_group.mentorklub.name
   account_tier             = "Standard"

@@ -1,7 +1,7 @@
 resource "azurerm_mssql_server" "sql_server" {
-  name                         = "${var.resource_group_name}-sql"
+  name                         = "${var.modules_resource_group_name}-sql"
   location                     = var.location
-  resource_group_name          = var.resource_group_name
+  resource_group_name          = var.modules_resource_group_name
   version                      = "12.0"
   administrator_login          = var.db_username
   administrator_login_password = var.db_password
@@ -9,7 +9,7 @@ resource "azurerm_mssql_server" "sql_server" {
     protected = "Yes"
     owner     = "CloudMentor"
     purpose   = "Educational"
-    type      = "Dynamic"
+    type      = "Modulok"
   }
 
 
@@ -38,7 +38,7 @@ resource "azurerm_mssql_database" "database" {
     protected = "Yes"
     owner     = "CloudMentor"
     purpose   = "Educational"
-    type      = "Dynamic"
+    type      = "Modulok"
   }
 
   # prevent the possibility of accidental data loss

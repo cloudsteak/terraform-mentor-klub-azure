@@ -1,6 +1,6 @@
 
 resource "azurerm_virtual_network" "mentorklub" {
-  name                = "${var.resource_group_name}-vnet"
+  name                = "${var.main_resource_group_name}-vnet"
   location            = azurerm_resource_group.mentorklub.location
   resource_group_name = azurerm_resource_group.mentorklub.name
   address_space       = var.vnet_address_space
@@ -13,7 +13,7 @@ resource "azurerm_virtual_network" "mentorklub" {
 }
 
 resource "azurerm_subnet" "primary_subnet" {
-  name                 = "${var.resource_group_name}-vnet-subnet-01"
+  name                 = "${var.main_resource_group_name}-vnet-subnet-01"
   resource_group_name  = azurerm_resource_group.mentorklub.name
   virtual_network_name = azurerm_virtual_network.mentorklub.name
   address_prefixes     = ["${var.subnet_address_prefix}"]
@@ -21,7 +21,7 @@ resource "azurerm_subnet" "primary_subnet" {
 
 
 resource "azurerm_network_security_group" "mentorklub_nsg" {
-  name                = "${var.resource_group_name}-vnet-nsg"
+  name                = "${var.main_resource_group_name}-vnet-nsg"
   location            = azurerm_resource_group.mentorklub.location
   resource_group_name = azurerm_resource_group.mentorklub.name
 
