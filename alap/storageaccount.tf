@@ -9,6 +9,6 @@ resource "azurerm_storage_account" "primary_sa" {
     protected = "Yes"
     owner     = "CloudMentor"
     purpose   = "Educational"
-    type      = "Permanent"
+    type      = "Alap"
   }
 }

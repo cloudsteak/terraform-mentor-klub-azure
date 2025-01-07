@@ -5,7 +5,7 @@ resource "azurerm_resource_group" "mentorklub" {
     protected = "Yes"
     owner     = "CloudMentor"
     purpose   = "Educational"
-    type      = "Permanent"
+    type      = "Alap"
   }
 }
 
