@@ -58,7 +58,24 @@ module "openai" {
     purpose   = "Educational"
     type      = "Modulok"
   }
+  depends_on = [azurerm_resource_group.ai]
+
+}
+
+
+resource "azurerm_storage_container" "rag_container" {
+  name                  = "ai-forras"
+  storage_account_name  = "${var.main_resource_group_name}sa"
+  container_access_type = "private"
 }
 
 
 
+resource "azurerm_storage_blob" "file_upload" {
+  for_each               = fileset(var.local_doc_directory_path, "*.md") # Match md files in the directory
+  name                   = each.value                                    # Blob name (same as the file name)
+  storage_account_name   = "${var.main_resource_group_name}sa"
+  storage_container_name = azurerm_storage_container.rag_container.name
+  type                   = "Block"
+  source                 = "${var.local_doc_directory_path}/${each.value}" # Full path to the local file
+}

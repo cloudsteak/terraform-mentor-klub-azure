@@ -10,3 +10,7 @@ output "subnet_id" {
   value = azurerm_subnet.primary_subnet.id
 
 }
+
+output "storage_account_name" {
+  value = azurerm_storage_account.primary_sa.name
+}
