@@ -7,6 +7,9 @@ resource "azurerm_resource_group" "db" {
     purpose   = "Educational"
     type      = "Modulok"
   }
+  depends_on = [
+    var.main_resource_group_name
+  ]
 }
 
 resource "azurerm_mssql_server" "sql_server" {
