@@ -1,0 +1,33 @@
+{
+    "deployments": {
+      "chat_model-35": {
+        "name": "gpt-35-turbo",
+        "model_format": "OpenAI",
+        "model_name": "gpt-35-turbo",
+        "model_version": "1106",
+        "scale_type": "Standard",
+        "capacity": 200
+      },
+      "chat_model-4o": {
+        "name": "gpt-4o",
+        "model_format": "OpenAI",
+        "model_name": "gpt-4o",
+        "model_version": "2024-05-13",
+        "scale_type": "Standard",
+        "capacity": 45
+      },
+      "chat_model-4o-mini": {
+        "name": "gpt-4o-mini",
+        "model_format": "OpenAI",
+        "model_name": "gpt-4o-mini",
+        "model_version": "2024-07-18",
+        "scale_type": "Standard",
+        "capacity": 400
+      },
+      "embedding_model": {
+        "name": "text-embedding-ada-002",
+        "model_format": "OpenAI",
+        "model_name": "text-embedding-ada-002"
+      }
+    }
+  }
