@@ -10,7 +10,7 @@ resource "azurerm_resource_group" "ai" {
 }
 
 locals {
-  deployment_data = jsondecode(file("../variables/openai_deployments.json/"))
+  deployment_data = jsondecode(file("../fajlok/openai_deployments.json/"))
 }
 
 module "openai" {
