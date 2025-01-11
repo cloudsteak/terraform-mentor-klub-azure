@@ -172,7 +172,7 @@ resource "azurerm_shared_image_version" "image_version" {
   name                = formatdate("YYYY.MM.DD", timestamp())
   gallery_name        = azurerm_shared_image_gallery.gallery.name
   image_name          = azurerm_shared_image.shared_image.name
-  managed_image_id    = azurerm_image.example.id
+  managed_image_id    = azurerm_image.custom_image.id
   resource_group_name = azurerm_shared_image.shared_image.resource_group_name
   location            = var.location
 
