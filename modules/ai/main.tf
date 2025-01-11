@@ -1,43 +1,33 @@
 resource "azurerm_resource_group" "ai" {
-  name     = "ai-${var.modules_resource_group_name}"
+  name     = "${var.resource_group_name_prefix}-${var.modules_resource_group_name_suffix}"
   location = var.location
-  tags = {
-    protected = "Yes"
-    owner     = "CloudMentor"
-    purpose   = "Educational"
-    type      = "Modulok"
-  }
+  tags = var.tags
 }
 
 locals {
-  deployment_data = jsondecode(file("../fajlok/openai_deployments.json/"))
+  deployment_data = jsondecode(file("../../fajlok/openai_deployments.json"))
 }
 
 module "openai" {
   source  = "Azure/openai/azurerm"
   version = "0.1.5"
   # insert the 2 required variables here
-  account_name                  = "${var.main_resource_group_name}-openai"
-  custom_subdomain_name         = "${var.main_resource_group_name}-openai"
+  account_name                  = "${var.main_resource_group_name}-${var.ai_name_suffix}"
+  custom_subdomain_name         = "${var.main_resource_group_name}-${var.ai_name_suffix}"
   public_network_access_enabled = true
   location                      = var.location
   resource_group_name           = azurerm_resource_group.ai.name
   deployment                    = local.deployment_data
-  tags = {
-    protected = "Yes"
-    owner     = "CloudMentor"
-    purpose   = "Educational"
-    type      = "Modulok"
-  }
+  tags = var.tags
   depends_on = [azurerm_resource_group.ai]
 
 }
 
 
 resource "azurerm_storage_container" "rag_container" {
-  name                  = "ai-forras"
-  storage_account_name  = "${var.main_resource_group_name}sa"
-  container_access_type = "private"
+  name                  = var.doc_container_name
+  storage_account_name  = "${var.rag_storage_account_name}"
+  container_access_type = var.doc_container_access_type
 }
 
 

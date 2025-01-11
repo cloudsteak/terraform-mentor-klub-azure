@@ -64,8 +64,5 @@ variable "db_name" {
   description = "value of the Azure database name"
 }
 
-variable "local_doc_directory_path" {
-  type        = string
-  description = "value of the local document directory path for RAG"
-}
+
 

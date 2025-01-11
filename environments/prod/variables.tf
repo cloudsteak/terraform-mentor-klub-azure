@@ -74,3 +74,11 @@ variable "storage_account_name_suffix" {
   description = "value of the Azure storage account suffix"
 }
 
+######
+# AI #
+######
+
+variable "local_doc_directory_path" {
+  type        = string
+  description = "value of the local document directory path for RAG"
+}

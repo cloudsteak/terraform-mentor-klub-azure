@@ -14,6 +14,10 @@ output "natgw_resource_group_name" {
   value = var.modules_enabled.natgw ? module.natgw[0].resource_group_name : null
 }
 
+output "ai_resource_group_name" {
+  value = var.modules_enabled.ai ? module.ai[0].resource_group_name : null
+}
+
 output "storage_account_name" {
   value = var.modules_enabled.storage_account ? module.storage_account[0].storage_account_name : null
 }

@@ -67,3 +67,17 @@ module "storage_account" {
 }
 
 
+# AI Module
+module "ai" {
+  source                             = "../../modules/ai"
+  subscription_id                    = var.subscription_id
+  main_resource_group_name           = var.main_resource_group_name
+  location                           = var.location
+  tags                               = var.tags
+  modules_resource_group_name_suffix = var.modules_resource_group_name_suffix
+  local_doc_directory_path           = var.local_doc_directory_path
+  rag_storage_account_name           = module.storage_account[0].storage_account_name
+
+  # Only create resources if the module is enabled
+  count = var.modules_enabled["ai"] ? 1 : 0
+}
