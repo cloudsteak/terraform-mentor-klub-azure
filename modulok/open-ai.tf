@@ -22,7 +22,7 @@ module "openai" {
   public_network_access_enabled = true
   location                      = var.location
   resource_group_name           = azurerm_resource_group.ai.name
-  deployment = local.deployment_data
+  deployment                    = local.deployment_data
   tags = {
     protected = "Yes"
     owner     = "CloudMentor"
