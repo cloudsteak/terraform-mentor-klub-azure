@@ -1,33 +1,30 @@
 
 resource "azurerm_virtual_network" "mentorklub" {
-  name                = "${var.resource_group_name}-vnet"
-  location            = azurerm_resource_group.mentorklub.location
-  resource_group_name = azurerm_resource_group.mentorklub.name
+  name                = "${var.main_resource_group_name}-${var.vnet_name_suffix}"
+  location            = var.location
+  resource_group_name = var.main_resource_group_name
   address_space       = var.vnet_address_space
-  tags = {
-    protected = "Yes"
-    owner     = "CloudMentor"
-    purpose   = "Educational"
-    type      = "Permanent"
-  }
+  tags = var.tags
+
+  depends_on = [ var.main_resource_group_name ]
 }
 
 resource "azurerm_subnet" "primary_subnet" {
-  name                 = "${var.resource_group_name}-vnet-subnet-01"
-  resource_group_name  = azurerm_resource_group.mentorklub.name
+  name                 = "${var.subnet_1_name}"
+  resource_group_name  = var.main_resource_group_name
   virtual_network_name = azurerm_virtual_network.mentorklub.name
   address_prefixes     = ["${var.subnet_address_prefix}"]
 }
 
 
 resource "azurerm_network_security_group" "mentorklub_nsg" {
-  name                = "${var.resource_group_name}-vnet-nsg"
-  location            = azurerm_resource_group.mentorklub.location
-  resource_group_name = azurerm_resource_group.mentorklub.name
+  name                = "${var.main_resource_group_name}-${var.vnet_name_suffix}-${var.nsg_name_suffix}"
+  location            = var.location
+  resource_group_name = var.main_resource_group_name
 
   dynamic "security_rule" {
 
-    for_each = jsondecode(file("../variables/security_rules.json"))
+    for_each = jsondecode(file("../../files/security_rules.json"))
     content {
       name                       = security_rule.value["name"]
       priority                   = security_rule.value["priority"]
@@ -40,6 +37,10 @@ resource "azurerm_network_security_group" "mentorklub_nsg" {
       destination_address_prefix = security_rule.value["destination_address_prefix"]
     }
   }
+
+  tags = var.tags
+
+  depends_on = [ azurerm_subnet.primary_subnet ]
 }
 
 resource "azurerm_subnet_network_security_group_association" "subnet_nsg_assoc" {
