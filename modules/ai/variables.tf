@@ -63,7 +63,7 @@ variable "doc_container_access_type" {
 variable "local_doc_directory_path" {
   type        = string
   description = "value of the local document directory path for RAG"
-  default = "../../fajlok/dokumentumok"
+  default = "../../files/docs"
 }
 
 variable "rag_storage_account_name" {

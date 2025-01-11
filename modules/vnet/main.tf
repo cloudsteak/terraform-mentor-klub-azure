@@ -24,7 +24,7 @@ resource "azurerm_network_security_group" "mentorklub_nsg" {
 
   dynamic "security_rule" {
 
-    for_each = jsondecode(file("../../fajlok/security_rules.json"))
+    for_each = jsondecode(file("../../files/security_rules.json"))
     content {
       name                       = security_rule.value["name"]
       priority                   = security_rule.value["priority"]
