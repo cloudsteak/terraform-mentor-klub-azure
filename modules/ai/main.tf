@@ -28,6 +28,7 @@ resource "azurerm_storage_container" "rag_container" {
   name                  = var.doc_container_name
   storage_account_name  = "${var.rag_storage_account_name}"
   container_access_type = var.doc_container_access_type
+  depends_on = [var.rag_storage_account_name]
 }
 
 
@@ -39,4 +40,5 @@ resource "azurerm_storage_blob" "file_upload" {
   storage_container_name = azurerm_storage_container.rag_container.name
   type                   = "Block"
   source                 = "${var.local_doc_directory_path}/${each.value}" # Full path to the local file
+  depends_on = [azurerm_storage_container.rag_container]
 }
