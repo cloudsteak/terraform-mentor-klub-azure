@@ -9,30 +9,52 @@ variable "subscription_id" {
 variable "main_resource_group_name" {
   type        = string
   description = "value of the Azure resource group name"
-  default     = "mentorklub2025"
 }
 
 variable "location" {
   type        = string
   description = "value of the Azure location"
-  default     = "Sweden Central"
+}
+
+variable "tags" {
+  type        = map(string)
+  description = "A map of tags to add to all resources."
+  default = {
+    owner   = "CloudMentor"
+    purpose = "Educational"
+    type    = "Alap"
+  }
 }
 
 ###############
 # VNET Inputs #
 ###############
 
+variable "vnet_name_suffix" {
+  type        = string
+  description = "value of the Azure virtual network name suffix"
+  default     = "vnet"
+}
+
+variable "subnet_1_name" {
+  type        = string
+  description = "value of the Azure subnet 1 name"
+  default     = "alap"
+
+}
+
+variable "nsg_name_suffix" {
+  type        = string
+  description = "value of the Azure network security group name suffix"
+  default     = "nsg"
+}
 
 variable "vnet_address_space" {
   type        = list(string)
   description = "value of the Azure virtual network address space"
-  default     = ["10.10.0.0/16"]
 }
 
 variable "subnet_address_prefix" {
   type        = string
   description = "value of the Azure subnet address prefix"
-  default     = "10.10.8.0/22"
 }
-
-
