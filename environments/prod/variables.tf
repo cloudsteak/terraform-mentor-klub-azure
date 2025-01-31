@@ -82,3 +82,23 @@ variable "local_doc_directory_path" {
   type        = string
   description = "value of the local document directory path for RAG"
 }
+
+##############
+# SQL Inputs #
+##############
+
+variable "db_username" {
+  type        = string
+  description = "value of the Azure SQL Database username"
+
+}
+
+variable "db_password" {
+  type        = string
+  description = "value of the Azure SQL Database password"
+}
+
+variable "db_name" {
+  type        = string
+  description = "value of the Azure SQL Database name"
+}

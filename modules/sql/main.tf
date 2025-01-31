@@ -1,12 +1,7 @@
 resource "azurerm_resource_group" "db" {
-  name     = "adatbazis-${var.modules_resource_group_name}"
+  name     = "${var.resource_group_name_prefix}-${var.modules_resource_group_name_suffix}"
   location = var.location
-  tags = {
-    protected = "Yes"
-    owner     = "CloudMentor"
-    purpose   = "Educational"
-    type      = "Modulok"
-  }
+  tags = var.tags
   depends_on = [
     var.main_resource_group_name
   ]
@@ -19,12 +14,7 @@ resource "azurerm_mssql_server" "sql_server" {
   version                      = "12.0"
   administrator_login          = var.db_username
   administrator_login_password = var.db_password
-  tags = {
-    protected = "Yes"
-    owner     = "CloudMentor"
-    purpose   = "Educational"
-    type      = "Modulok"
-  }
+  tags = var.tags
 
 
 }
@@ -48,12 +38,7 @@ resource "azurerm_mssql_database" "database" {
     retention_days       = 0
     state                = "Disabled"
   }
-  tags = {
-    protected = "Yes"
-    owner     = "CloudMentor"
-    purpose   = "Educational"
-    type      = "Modulok"
-  }
+  tags = var.tags
 
   # prevent the possibility of accidental data loss
   lifecycle {

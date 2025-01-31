@@ -25,3 +25,12 @@ output "storage_account_name" {
 output "acr_login_server" {
   value = var.modules_enabled.arc ? module.arc[0].acr_login_server : null
 }
+
+output "sql_server_fqdn" {
+  value = var.modules_enabled.sql ? module.sql[0].sql_server_fqdn : null
+}
+
+output "sql_database_name" {
+  value = var.modules_enabled.sql ? module.sql[0].database_name : null
+
+}

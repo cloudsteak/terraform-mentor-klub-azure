@@ -16,7 +16,7 @@ provider "azurerm" {
 resource "azurerm_resource_group" "mentorklub" {
   name     = var.main_resource_group_name
   location = var.location
-  tags = var.tags
+  tags     = var.tags
 }
 
 # VNET Module
@@ -89,4 +89,20 @@ module "arc" {
 
   # Only create resources if the module is enabled
   count = var.modules_enabled["arc"] ? 1 : 0
+}
+
+# Database Module
+module "sql" {
+  source                             = "../../modules/sql"
+  subscription_id                    = var.subscription_id
+  main_resource_group_name           = var.main_resource_group_name
+  location                           = var.location
+  tags                               = var.tags
+  modules_resource_group_name_suffix = var.modules_resource_group_name_suffix
+  db_username                        = var.db_username
+  db_password                        = var.db_password
+  db_name                            = var.db_name
+
+  # Only create resources if the module is enabled
+  count = var.modules_enabled["sql"] ? 1 : 0
 }

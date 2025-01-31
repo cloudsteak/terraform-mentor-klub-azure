@@ -22,7 +22,6 @@ variable "tags" {
   default     = {
     owner     = "CloudMentor"
     purpose   = "Educational"
-    type      = "Alap"
   }
   
 }
