@@ -16,11 +16,7 @@ provider "azurerm" {
 resource "azurerm_resource_group" "mentorklub" {
   name     = var.main_resource_group_name
   location = var.location
-  tags = {
-    owner   = "CloudMentor"
-    purpose = "Educational"
-    type    = "Alap"
-  }
+  tags = var.tags
 }
 
 # VNET Module
@@ -80,4 +76,17 @@ module "ai" {
 
   # Only create resources if the module is enabled
   count = var.modules_enabled["ai"] ? 1 : 0
+}
+
+# Azure Container Registry Module
+module "arc" {
+  source                             = "../../modules/arc"
+  subscription_id                    = var.subscription_id
+  main_resource_group_name           = var.main_resource_group_name
+  location                           = var.location
+  tags                               = var.tags
+  modules_resource_group_name_suffix = var.modules_resource_group_name_suffix
+
+  # Only create resources if the module is enabled
+  count = var.modules_enabled["arc"] ? 1 : 0
 }

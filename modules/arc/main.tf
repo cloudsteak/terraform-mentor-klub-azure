@@ -1,12 +1,7 @@
 resource "azurerm_resource_group" "acr" {
-  name     = "docker-${var.modules_resource_group_name}"
+  name     = "${var.resource_group_name_prefix}-${var.modules_resource_group_name_suffix}"
   location = var.location
-  tags = {
-    protected = "Yes"
-    owner     = "CloudMentor"
-    purpose   = "Educational"
-    type      = "Modulok"
-  }
+  tags = var.tags
 }
 
 resource "azurerm_container_registry" "acr" {
@@ -15,10 +10,5 @@ resource "azurerm_container_registry" "acr" {
   resource_group_name = azurerm_resource_group.acr.name
   sku                 = "Basic"
   admin_enabled       = true
-  tags = {
-    protected = "Yes"
-    owner     = "CloudMentor"
-    purpose   = "Educational"
-    type      = "Modulok"
-  }
+  tags = var.tags
 }
