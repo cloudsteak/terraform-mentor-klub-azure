@@ -212,20 +212,17 @@ resource "azurerm_shared_image_version" "image_version" {
 resource "null_resource" "delete_vm" {
   provisioner "local-exec" {
     command = <<-EOT
-      echo "Deleting VM extensions..."
-      az vm extension delete --resource-group ${azurerm_resource_group.gallery.name} --vm-name "${azurerm_linux_virtual_machine.vm.name}" --name CustomScript
-
       echo "Deleting VM..."
-      az vm delete --resource-group ${azurerm_resource_group.gallery.name} --name "${azurerm_linux_virtual_machine.vm.name}" --yes
+      az vm delete --resource-group ${azurerm_resource_group.gallery.name} --name "${azurerm_linux_virtual_machine.vm.name}"
 
       echo "Deleting network interface..."
       az network nic delete --resource-group ${azurerm_resource_group.gallery.name} --name "${azurerm_network_interface.nic.name}"
 
       echo "Deleting OS disk..."
-      az disk delete --resource-group ${azurerm_resource_group.gallery.name} --name "${azurerm_linux_virtual_machine.vm.os_disk[0].name}" --yes --no-wait
+      az disk delete --resource-group ${azurerm_resource_group.gallery.name} --name "${azurerm_linux_virtual_machine.vm.os_disk[0].name}" --no-wait
 
       echo "Deleting custom image..."
-      az image delete --resource-group ${azurerm_resource_group.gallery.name} --name "${azurerm_image.custom_image.name}" --yes
+      az image delete --id "${azurerm_image.custom_image.id}"
 
       echo "Cleanup completed!"
     EOT
