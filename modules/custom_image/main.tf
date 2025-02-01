@@ -1,12 +1,7 @@
 resource "azurerm_resource_group" "gallery" {
-  name     = "kep-modul"
+  name     = "${var.resource_group_name_prefix}-${var.modules_resource_group_name_suffix}"
   location = var.location
-  tags = {
-    protected = "Yes"
-    owner     = "CloudMentor"
-    purpose   = "Educational"
-    type      = "Alap"
-  }
+  tags = var.tags
 }
 
 resource "azurerm_shared_image_gallery" "gallery" {
@@ -15,37 +10,31 @@ resource "azurerm_shared_image_gallery" "gallery" {
   resource_group_name = azurerm_resource_group.gallery.name
   description         = "Egyedei képfájlok gyűjteménye"
 
-  tags = {
-    protected = "Yes"
-    owner     = "CloudMentor"
-    purpose   = "Educational"
-    type      = "Alap"
-  }
+  tags = var.tags
 }
-
 
 # Network Interface
 resource "azurerm_network_interface" "nic" {
-  name                = "image-nic"
+  name                = "${var.image_vm_1_prefix}-nic"
   location            = var.location
   resource_group_name = azurerm_resource_group.gallery.name
 
   ip_configuration {
     name                          = "ipconfig1"
-    subnet_id                     = "/subscriptions/${var.subscription_id}/resourceGroups/${var.main_resource_group_name}/providers/Microsoft.Network/virtualNetworks/${var.main_resource_group_name}-vnet/subnets/${var.main_resource_group_name}-vnet-subnet-01"
+    subnet_id                     = var.vnet_subnet_id
     private_ip_address_allocation = "Dynamic"
   }
 }
 
 # Linux Virtual Machine
 resource "azurerm_linux_virtual_machine" "vm" {
-  name                            = "image-vm"
+  name                            = "${var.image_vm_1_prefix}-vm"
   location                        = var.location
   resource_group_name             = azurerm_resource_group.gallery.name
-  size                            = "Standard_B1s"
+  size                            = var.image_vm_1_size
   disable_password_authentication = false
-  admin_username                  = "rendszergazda"
-  admin_password                  = "Ab123456789!"
+  admin_username                  = var.image_vm_1_username
+  admin_password                  = var.image_vm_1_password
 
   network_interface_ids = [azurerm_network_interface.nic.id]
 
@@ -64,36 +53,55 @@ resource "azurerm_linux_virtual_machine" "vm" {
 
 # Storage Container for storing scripts
 resource "azurerm_storage_container" "script_container" {
-  name                  = "scripts"
-  storage_account_id    = azurerm_storage_account.primary_sa.id
+  name                  = var.storage_account_script_container_name
+  storage_account_name    = var.storage_account_name
   container_access_type = "blob"
 }
 
 # Upload mentor.sh
 resource "azurerm_storage_blob" "mentor_sh" {
   name                   = "mentor.sh"
-  storage_account_name   = azurerm_storage_account.primary_sa.name
-  storage_container_name = azurerm_storage_container.script_container.name
+  storage_account_name   = var.storage_account_name
+  storage_container_name = var.storage_account_script_container_name
   type                   = "Block"
-  source                 = "../scripts/mentor.sh"
+  source                 = "../../scripts/mentor.sh"
+  depends_on = [ azurerm_storage_container.script_container ]
 }
 
 # Upload mentor.service
 resource "azurerm_storage_blob" "mentor_service" {
   name                   = "mentor.service"
-  storage_account_name   = azurerm_storage_account.primary_sa.name
-  storage_container_name = azurerm_storage_container.script_container.name
+  storage_account_name   = var.storage_account_name
+  storage_container_name = var.storage_account_script_container_name
   type                   = "Block"
-  source                 = "../scripts/mentor.service"
+  source                 = "../../scripts/mentor.service"
+  depends_on = [ azurerm_storage_container.script_container ]
 }
 
 # Upload mentor_install.sh
 resource "azurerm_storage_blob" "mentor_install_sh" {
   name                   = "mentor_install.sh"
-  storage_account_name   = azurerm_storage_account.primary_sa.name
-  storage_container_name = azurerm_storage_container.script_container.name
+  storage_account_name   = var.storage_account_name
+  storage_container_name = var.storage_account_script_container_name
   type                   = "Block"
-  source                 = "../scripts/mentor_install.sh"
+  source                 = "../../scripts/mentor_install.sh"
+  depends_on = [ azurerm_storage_container.script_container ]
+}
+
+resource "local_file" "env_file" {
+  filename = var.evn_file_path
+  content  = local.env_file_content
+}
+
+
+# Upload .env file
+resource "azurerm_storage_blob" "env_file" {
+  name                   = ".env"
+  storage_account_name   = var.storage_account_name
+  storage_container_name = var.storage_account_script_container_name
+  type                   = "Block"
+  source                 = local_file.env_file.filename
+  depends_on = [ azurerm_storage_container.script_container ]
 }
 
 resource "azurerm_virtual_machine_extension" "custom_script" {
@@ -113,6 +121,8 @@ resource "azurerm_virtual_machine_extension" "custom_script" {
     "commandToExecute": "bash -c 'chmod +x mentor_install.sh && ./mentor_install.sh'"
   }
   SETTINGS
+
+  depends_on = [ azurerm_linux_virtual_machine.vm ]
 }
 
 # Stop the VM
@@ -139,6 +149,7 @@ resource "azurerm_image" "custom_image" {
   resource_group_name       = azurerm_resource_group.gallery.name
   source_virtual_machine_id = azurerm_linux_virtual_machine.vm.id
   hyper_v_generation = "V2"
+  depends_on = [null_resource.generalize_vm]
 }
 
 resource "azurerm_shared_image" "shared_image" {
@@ -158,12 +169,9 @@ resource "azurerm_shared_image" "shared_image" {
 
   hyper_v_generation = "V2"
 
-  tags = {
-    protected = "Yes"
-    owner     = "CloudMentor"
-    purpose   = "Educational"
-    type      = "Alap"
-  }
+  tags = var.tags
+
+  depends_on = [ azurerm_image.custom_image ]
 
 
 }
@@ -184,19 +192,48 @@ resource "azurerm_shared_image_version" "image_version" {
   }
 
   tags = {
-    protected = "Yes"
     owner     = "CloudMentor"
     purpose   = "Educational"
-    type      = "Alap"
     version   = formatdate("YYYY.MM.DD", timestamp())
   }
 }
 
 
-resource "null_resource" "delete_custom_image" {
+# resource "null_resource" "delete_custom_image" {
+#   provisioner "local-exec" {
+#     command = "terraform destroy -target azurerm_image.custom_image -auto-approve -lock=false"
+#   }
+
+#   depends_on = [azurerm_shared_image.shared_image]
+# }
+
+
+# Delete the temporary resources
+resource "null_resource" "delete_vm" {
   provisioner "local-exec" {
-    command = "terraform destroy -target azurerm_image.custom_image -auto-approve"
+    command = <<-EOT
+      echo "Deleting VM extensions..."
+      az vm extension delete --resource-group ${azurerm_resource_group.gallery.name} --vm-name "${azurerm_linux_virtual_machine.vm.name}" --name CustomScript
+
+      echo "Deleting VM..."
+      az vm delete --resource-group ${azurerm_resource_group.gallery.name} --name "${azurerm_linux_virtual_machine.vm.name}" --yes
+
+      echo "Deleting network interface..."
+      az network nic delete --resource-group ${azurerm_resource_group.gallery.name} --name "${azurerm_network_interface.nic.name}"
+
+      echo "Deleting OS disk..."
+      az disk delete --resource-group ${azurerm_resource_group.gallery.name} --name "${azurerm_linux_virtual_machine.vm.os_disk[0].name}" --yes --no-wait
+
+      echo "Deleting custom image..."
+      az image delete --resource-group ${azurerm_resource_group.gallery.name} --name "${azurerm_image.custom_image.name}" --yes
+
+      echo "Cleanup completed!"
+    EOT
   }
 
-  depends_on = [azurerm_shared_image.shared_image]
+  depends_on = [azurerm_shared_image_version.image_version]
 }
+
+
+
+

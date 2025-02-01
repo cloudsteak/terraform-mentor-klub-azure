@@ -28,6 +28,8 @@ module "vnet" {
   vnet_address_space       = var.vnet_address_space
   subnet_address_prefix    = var.subnet_address_prefix
 
+  depends_on = [azurerm_resource_group.mentorklub]
+
   # Only create resources if the module is enabled
   count = var.modules_enabled["vnet"] ? 1 : 0
 }
@@ -57,6 +59,7 @@ module "storage_account" {
   location                    = var.location
   tags                        = var.tags
 
+  depends_on = [azurerm_resource_group.mentorklub]
 
   # Only create resources if the module is enabled
   count = var.modules_enabled["storage_account"] ? 1 : 0
@@ -74,6 +77,8 @@ module "ai" {
   local_doc_directory_path           = var.local_doc_directory_path
   rag_storage_account_name           = module.storage_account[0].storage_account_name
 
+  depends_on = [azurerm_resource_group.mentorklub]
+
   # Only create resources if the module is enabled
   count = var.modules_enabled["ai"] ? 1 : 0
 }
@@ -86,6 +91,8 @@ module "arc" {
   location                           = var.location
   tags                               = var.tags
   modules_resource_group_name_suffix = var.modules_resource_group_name_suffix
+
+  depends_on = [azurerm_resource_group.mentorklub]
 
   # Only create resources if the module is enabled
   count = var.modules_enabled["arc"] ? 1 : 0
@@ -103,6 +110,24 @@ module "sql" {
   db_password                        = var.db_password
   db_name                            = var.db_name
 
+  depends_on = [azurerm_resource_group.mentorklub]
+
   # Only create resources if the module is enabled
   count = var.modules_enabled["sql"] ? 1 : 0
+}
+
+# Custom Image Module
+module "custom_image" {
+  source                             = "../../modules/custom_image"
+  subscription_id                    = var.subscription_id
+  main_resource_group_name           = var.main_resource_group_name
+  location                           = var.location
+  tags                               = var.tags
+  vnet_subnet_id                     = module.vnet[0].subnet_id
+  modules_resource_group_name_suffix = var.modules_resource_group_name_suffix
+  storage_account_name               = module.storage_account[0].storage_account_name
+
+  depends_on = [module.vnet, module.storage_account, azurerm_resource_group.mentorklub]
+  # Only create resources if the module is enabled
+  count = var.modules_enabled["custom_image"] ? 1 : 0
 }
