@@ -1,0 +1,9 @@
+[Unit]
+Description=Create Mentor Website
+After=network.service
+
+[Service]
+ExecStart=/usr/local/bin/mentor.sh
+
+[Install]
+WantedBy=default.target

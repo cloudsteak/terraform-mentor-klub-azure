@@ -1,0 +1,11 @@
+[Unit]
+Description=Create Mentor Website + SQL
+After=network.service
+
+[Service]
+ExecStart=/usr/local/bin/mentor-sql.sh
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target
