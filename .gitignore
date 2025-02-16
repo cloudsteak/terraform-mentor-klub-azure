@@ -44,3 +44,4 @@ terraform.rc
 
 # Ignore all .plan files
 *.plan
+.vscode/settings.json
