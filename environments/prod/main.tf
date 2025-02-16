@@ -13,11 +13,28 @@ provider "azurerm" {
   subscription_id = var.subscription_id
 }
 
+# Resource Group
 resource "azurerm_resource_group" "mentorklub" {
   name     = var.main_resource_group_name
   location = var.location
   tags     = var.tags
 }
+
+# Fetch the Entradata ID Group
+data "azuread_group" "mentorklub_user_group_name" {
+  display_name = var.entra_id_group_name
+}
+
+# Assign the Contributor role to the Entradata ID Group
+resource "azurerm_role_assignment" "mentorklub_user_group_name" {
+  scope                = azurerm_resource_group.mentorklub.id
+  role_definition_name = "Contributor"
+  principal_id         = replace(data.azuread_group.mentorklub_user_group_name.id, "//groups//", "")
+
+}
+
+
+
 
 # VNET Module
 module "vnet" {

@@ -49,6 +49,10 @@ variable "location" {
   description = "value of the Azure location"
 }
 
+variable "entra_id_group_name" {
+  type    = string
+}
+
 ###############
 # VNET Inputs #
 ###############
