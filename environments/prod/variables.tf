@@ -50,7 +50,7 @@ variable "location" {
 }
 
 variable "entra_id_group_name" {
-  type    = string
+  type = string
 }
 
 ###############
