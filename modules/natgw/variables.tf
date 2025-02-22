@@ -32,6 +32,9 @@ variable "tags" {
 
 }
 
+variable "entra_id_group_name" {
+  type = string
+}
 ###############
 # NAT Gateway #
 ###############

@@ -4,6 +4,27 @@ resource "azurerm_resource_group" "halozat" {
   tags = var.tags
 }
 
+# Add resource lock on natwg resource group
+resource "azurerm_management_lock" "natgw_rg_lock" {
+  name       = "DeleteLockNatGW"
+  scope      = azurerm_resource_group.halozat.id
+  lock_level = "CanNotDelete"
+  notes      = "This lock is to prevent user deletion of the NatGW Resource Group"
+}
+
+# Fetch the Entradata ID Group
+data "azuread_group" "mentorklub_user_group_name" {
+  display_name = var.entra_id_group_name
+}
+
+# Assign the Contributor role to the Entradata ID Group
+resource "azurerm_role_assignment" "mentorklub_user_group_name" {
+  scope                = azurerm_resource_group.halozat.id
+  role_definition_name = "Reader"
+  principal_id         = replace(data.azuread_group.mentorklub_user_group_name.id, "//groups//", "")
+
+}
+
 # Public IP for NAT Gateway
 resource "azurerm_public_ip" "nat_gw_pip" {
   name                = "${var.main_resource_group_name}-${var.nat_gateway_name_suffix}-${var.nat_gateway_pip_suffix}"
@@ -37,3 +58,4 @@ resource "azurerm_subnet_nat_gateway_association" "subnet_nat_gw_assoc" {
   subnet_id      = var.vnet_subnet_id
   nat_gateway_id = azurerm_nat_gateway.nat_gw.id
 }
+
