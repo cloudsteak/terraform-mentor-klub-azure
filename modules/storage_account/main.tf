@@ -7,3 +7,11 @@ resource "azurerm_storage_account" "primary_sa" {
 
   tags = var.tags
 }
+
+# Add resource lock on storage account
+resource "azurerm_management_lock" "mentorklub_sa_lock" {
+  name       = "DeleteLockMentorKlubSA"
+  scope      = azurerm_storage_account.primary_sa.id
+  lock_level = "CanNotDelete"
+  notes      = "This lock is to prevent user deletion of the MentorKlub Storage Account"
+}
