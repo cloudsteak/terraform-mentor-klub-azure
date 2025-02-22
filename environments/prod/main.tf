@@ -60,6 +60,7 @@ module "natgw" {
   tags                               = var.tags
   modules_resource_group_name_suffix = var.modules_resource_group_name_suffix
   vnet_subnet_id                     = module.vnet[0].subnet_id
+  entra_id_group_name                = var.entra_id_group_name
 
   # Only create resources if the module is enabled
   count = var.modules_enabled["natgw"] ? 1 : 0
@@ -126,6 +127,7 @@ module "sql" {
   db_username                        = var.db_username
   db_password                        = var.db_password
   db_name                            = var.db_name
+  entra_id_group_name                = var.entra_id_group_name
 
   depends_on = [azurerm_resource_group.mentorklub]
 
