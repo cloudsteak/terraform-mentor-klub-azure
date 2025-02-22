@@ -51,7 +51,7 @@ resource "azurerm_network_security_group" "mentorklub_nsg" {
   depends_on = [ azurerm_subnet.primary_subnet ]
 }
 
-# Add resource lock on vnet
+# Add resource lock on nsg
 resource "azurerm_management_lock" "mentorklub_vnet_nsg_lock" {
   name       = "DeleteLockMentorKlubVNETNSG"
   scope      = azurerm_network_security_group.mentorklub_nsg.id
