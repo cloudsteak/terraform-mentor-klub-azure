@@ -15,6 +15,10 @@ resource "azurerm_management_lock" "mentorklub_vnet_lock" {
   scope      = azurerm_virtual_network.mentorklub.id
   lock_level = "CanNotDelete"
   notes      = "This lock is to prevent user deletion of the MentorKlub VNET"
+
+  timeouts {
+    delete = "30m"  # Extend delete timeout from the default (which is lower)
+  }
 }
 
 resource "azurerm_subnet" "primary_subnet" {
@@ -57,6 +61,10 @@ resource "azurerm_management_lock" "mentorklub_vnet_nsg_lock" {
   scope      = azurerm_network_security_group.mentorklub_nsg.id
   lock_level = "CanNotDelete"
   notes      = "This lock is to prevent user deletion of the MentorKlub VNET NSG"
+
+  timeouts {
+    delete = "30m"  # Extend delete timeout from the default (which is lower)
+  }
 }
 
 resource "azurerm_subnet_network_security_group_association" "subnet_nsg_assoc" {

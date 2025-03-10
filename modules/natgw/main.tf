@@ -10,6 +10,10 @@ resource "azurerm_management_lock" "natgw_rg_lock" {
   scope      = azurerm_resource_group.halozat.id
   lock_level = "CanNotDelete"
   notes      = "This lock is to prevent user deletion of the NatGW Resource Group"
+
+  timeouts {
+    delete = "30m"  # Extend delete timeout from the default (which is lower)
+  }
 }
 
 # Fetch the Entradata ID Group

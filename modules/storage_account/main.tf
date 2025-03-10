@@ -14,4 +14,8 @@ resource "azurerm_management_lock" "mentorklub_sa_lock" {
   scope      = azurerm_storage_account.primary_sa.id
   lock_level = "CanNotDelete"
   notes      = "This lock is to prevent user deletion of the MentorKlub Storage Account"
+
+  timeouts {
+    delete = "30m"  # Extend delete timeout from the default (which is lower)
+  }
 }
