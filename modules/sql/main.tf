@@ -24,7 +24,7 @@ data "azuread_group" "mentorklub_user_group_name" {
   display_name = var.entra_id_group_name
 }
 
-# Assign the Contributor role to the Entradata ID Group
+# Assign the Reader role to the Entradata ID Group
 resource "azurerm_role_assignment" "mentorklub_user_group_name" {
   scope                = azurerm_resource_group.db.id
   role_definition_name = "Reader"
