@@ -58,7 +58,7 @@ variable "app_service_plan_sku" {
 }
 
 
-variable "app_service_plan_capacity" {
+variable "app_service_plan_worker_count" {
   type        = number
   description = "value of the Azure app service plan capacity"
   default = 1

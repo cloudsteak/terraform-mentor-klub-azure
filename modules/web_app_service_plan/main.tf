@@ -37,6 +37,7 @@ resource "azurerm_service_plan" "web_app_service_plan" {
   name                = "${var.main_resource_group_name}-${var.app_service_plan_name_suffix}"
   location            = var.location
   resource_group_name = azurerm_resource_group.web.name
+  worker_count = var.app_service_plan_worker_count
 
   os_type             = var.web_app_plan_os
   sku_name            = var.app_service_plan_sku
