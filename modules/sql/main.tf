@@ -15,7 +15,8 @@ resource "azurerm_management_lock" "mentorklub_db_rg_lock" {
   notes      = "This lock is to prevent user deletion of the MentorKlub DB resource group"
 
   timeouts {
-    delete = "30m"  # Extend delete timeout from the default (which is lower)
+    delete = "30m" # Extend delete timeout from the default (which is lower)
+    create = "30m" # Extend create timeout from the default (which is lower)
   }
 }
 

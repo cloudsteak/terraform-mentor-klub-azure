@@ -17,7 +17,8 @@ resource "azurerm_management_lock" "mentorklub_vnet_lock" {
   notes      = "This lock is to prevent user deletion of the MentorKlub VNET"
 
   timeouts {
-    delete = "30m"  # Extend delete timeout from the default (which is lower)
+    delete = "30m" # Extend delete timeout from the default (which is lower)
+    create = "30m" # Extend create timeout from the default (which is lower)
   }
 }
 
@@ -63,7 +64,8 @@ resource "azurerm_management_lock" "mentorklub_vnet_nsg_lock" {
   notes      = "This lock is to prevent user deletion of the MentorKlub VNET NSG"
 
   timeouts {
-    delete = "30m"  # Extend delete timeout from the default (which is lower)
+    delete = "30m" # Extend delete timeout from the default (which is lower)
+    create = "30m" # Extend create timeout from the default (which is lower)
   }
 }
 
