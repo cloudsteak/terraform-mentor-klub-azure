@@ -109,6 +109,7 @@ module "arc" {
   location                           = var.location
   tags                               = var.tags
   modules_resource_group_name_suffix = var.modules_resource_group_name_suffix
+  entra_id_group_name                = var.entra_id_group_name
 
   depends_on = [azurerm_resource_group.mentorklub]
 

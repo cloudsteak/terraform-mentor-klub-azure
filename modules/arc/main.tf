@@ -4,6 +4,32 @@ resource "azurerm_resource_group" "acr" {
   tags = var.tags
 }
 
+# Add resource lock on Docker resource group
+resource "azurerm_management_lock" "mentorklub_arc_rg_lock" {
+  name       = "DeleteLockMentorKlubDockerRG"
+  scope      = azurerm_resource_group.acr.id
+  lock_level = "CanNotDelete"
+  notes      = "This lock is to prevent user deletion of the MentorKlub Docker resource group"
+
+  timeouts {
+    delete = "30m" # Extend delete timeout from the default (which is lower)
+    create = "30m" # Extend create timeout from the default (which is lower)
+  }
+}
+
+# Fetch the Entradata ID Group
+data "azuread_group" "mentorklub_user_group_name" {
+  display_name = var.entra_id_group_name
+}
+
+# Assign the Contributor role to the Entradata ID Group
+resource "azurerm_role_assignment" "mentorklub_user_group_name" {
+  scope                = azurerm_resource_group.arc.id
+  role_definition_name = "Contributor"
+  principal_id         = replace(data.azuread_group.mentorklub_user_group_name.id, "//groups//", "")
+}
+
+
 resource "azurerm_container_registry" "acr" {
   name                = "${var.main_resource_group_name}acr"
   location            = var.location
