@@ -7,7 +7,7 @@ resource "azurerm_resource_group" "web" {
   ]
 }
 
-# Add resource lock on db resource group
+# Add resource lock on web resource group
 resource "azurerm_management_lock" "mentorklub_web_rg_lock" {
   name       = "DeleteLockMentorKlubWebRG"
   scope      = azurerm_resource_group.web.id
