@@ -37,7 +37,7 @@ variable "entra_id_group_name" {
 }
 
 ##############
-# ARC Inputs #
+# ACR Inputs #
 ##############
 
 variable "resource_group_name_prefix" {
