@@ -7,6 +7,32 @@ resource "azurerm_resource_group" "db" {
   ]
 }
 
+# Add resource lock on db resource group
+resource "azurerm_management_lock" "mentorklub_db_rg_lock" {
+  name       = "DeleteLockMentorKlubDBRG"
+  scope      = azurerm_resource_group.db.id
+  lock_level = "CanNotDelete"
+  notes      = "This lock is to prevent user deletion of the MentorKlub DB resource group"
+
+  timeouts {
+    delete = "30m" # Extend delete timeout from the default (which is lower)
+    create = "30m" # Extend create timeout from the default (which is lower)
+  }
+}
+
+# Fetch the Entradata ID Group
+data "azuread_group" "mentorklub_user_group_name" {
+  display_name = var.entra_id_group_name
+}
+
+# Assign the Reader role to the Entradata ID Group
+resource "azurerm_role_assignment" "mentorklub_user_group_name" {
+  scope                = azurerm_resource_group.db.id
+  role_definition_name = "Reader"
+  principal_id         = replace(data.azuread_group.mentorklub_user_group_name.id, "//groups//", "")
+
+}
+
 resource "azurerm_mssql_server" "sql_server" {
   name                         = "${var.main_resource_group_name}-sql"
   location                     = var.location

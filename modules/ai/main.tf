@@ -4,6 +4,31 @@ resource "azurerm_resource_group" "ai" {
   tags = var.tags
 }
 
+# Add resource lock on AI resource group
+resource "azurerm_management_lock" "mentorklub_ai_rg_lock" {
+  name       = "DeleteLockMentorKlubAIRG"
+  scope      = azurerm_resource_group.ai.id
+  lock_level = "CanNotDelete"
+  notes      = "This lock is to prevent user deletion of the MentorKlub AI resource group"
+
+  timeouts {
+    delete = "30m" # Extend delete timeout from the default (which is lower)
+    create = "30m" # Extend create timeout from the default (which is lower)
+  }
+}
+
+# Fetch the Entradata ID Group
+data "azuread_group" "mentorklub_user_group_name" {
+  display_name = var.entra_id_group_name
+}
+
+# Assign the Contributor role to the Entradata ID Group
+resource "azurerm_role_assignment" "mentorklub_user_group_name" {
+  scope                = azurerm_resource_group.ai.id
+  role_definition_name = "Contributor"
+  principal_id         = replace(data.azuread_group.mentorklub_user_group_name.id, "//groups//", "")
+}
+
 locals {
   deployment_data = jsondecode(file("../../files/openai_deployments.json"))
 }

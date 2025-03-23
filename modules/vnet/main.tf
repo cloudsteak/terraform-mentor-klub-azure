@@ -9,6 +9,19 @@ resource "azurerm_virtual_network" "mentorklub" {
   depends_on = [ var.main_resource_group_name ]
 }
 
+# Add resource lock on vnet
+resource "azurerm_management_lock" "mentorklub_vnet_lock" {
+  name       = "DeleteLockMentorKlubVNET"
+  scope      = azurerm_virtual_network.mentorklub.id
+  lock_level = "CanNotDelete"
+  notes      = "This lock is to prevent user deletion of the MentorKlub VNET"
+
+  timeouts {
+    delete = "30m" # Extend delete timeout from the default (which is lower)
+    create = "30m" # Extend create timeout from the default (which is lower)
+  }
+}
+
 resource "azurerm_subnet" "primary_subnet" {
   name                 = "${var.subnet_1_name}"
   resource_group_name  = var.main_resource_group_name
@@ -41,6 +54,19 @@ resource "azurerm_network_security_group" "mentorklub_nsg" {
   tags = var.tags
 
   depends_on = [ azurerm_subnet.primary_subnet ]
+}
+
+# Add resource lock on nsg
+resource "azurerm_management_lock" "mentorklub_vnet_nsg_lock" {
+  name       = "DeleteLockMentorKlubVNETNSG"
+  scope      = azurerm_network_security_group.mentorklub_nsg.id
+  lock_level = "CanNotDelete"
+  notes      = "This lock is to prevent user deletion of the MentorKlub VNET NSG"
+
+  timeouts {
+    delete = "30m" # Extend delete timeout from the default (which is lower)
+    create = "30m" # Extend create timeout from the default (which is lower)
+  }
 }
 
 resource "azurerm_subnet_network_security_group_association" "subnet_nsg_assoc" {

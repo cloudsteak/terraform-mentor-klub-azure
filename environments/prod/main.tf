@@ -13,11 +13,28 @@ provider "azurerm" {
   subscription_id = var.subscription_id
 }
 
+# Resource Group
 resource "azurerm_resource_group" "mentorklub" {
   name     = var.main_resource_group_name
   location = var.location
   tags     = var.tags
 }
+
+# Fetch the Entradata ID Group
+data "azuread_group" "mentorklub_user_group_name" {
+  display_name = var.entra_id_group_name
+}
+
+# Assign the Contributor role to the Entradata ID Group
+resource "azurerm_role_assignment" "mentorklub_user_group_name" {
+  scope                = azurerm_resource_group.mentorklub.id
+  role_definition_name = "Contributor"
+  principal_id         = replace(data.azuread_group.mentorklub_user_group_name.id, "//groups//", "")
+
+}
+
+
+
 
 # VNET Module
 module "vnet" {
@@ -43,6 +60,7 @@ module "natgw" {
   tags                               = var.tags
   modules_resource_group_name_suffix = var.modules_resource_group_name_suffix
   vnet_subnet_id                     = module.vnet[0].subnet_id
+  entra_id_group_name                = var.entra_id_group_name
 
   # Only create resources if the module is enabled
   count = var.modules_enabled["natgw"] ? 1 : 0
@@ -76,6 +94,7 @@ module "ai" {
   modules_resource_group_name_suffix = var.modules_resource_group_name_suffix
   local_doc_directory_path           = var.local_doc_directory_path
   rag_storage_account_name           = module.storage_account[0].storage_account_name
+  entra_id_group_name                = var.entra_id_group_name
 
   depends_on = [azurerm_resource_group.mentorklub]
 
@@ -91,6 +110,7 @@ module "arc" {
   location                           = var.location
   tags                               = var.tags
   modules_resource_group_name_suffix = var.modules_resource_group_name_suffix
+  entra_id_group_name                = var.entra_id_group_name
 
   depends_on = [azurerm_resource_group.mentorklub]
 
@@ -109,6 +129,7 @@ module "sql" {
   db_username                        = var.db_username
   db_password                        = var.db_password
   db_name                            = var.db_name
+  entra_id_group_name                = var.entra_id_group_name
 
   depends_on = [azurerm_resource_group.mentorklub]
 
@@ -130,4 +151,21 @@ module "custom_image" {
   depends_on = [module.vnet, module.storage_account, azurerm_resource_group.mentorklub]
   # Only create resources if the module is enabled
   count = var.modules_enabled["custom_image"] ? 1 : 0
+}
+
+
+# App Service Plan Module
+module "app_service_plan" {
+  source                             = "../../modules/web_app_service_plan"
+  subscription_id                    = var.subscription_id
+  main_resource_group_name           = var.main_resource_group_name
+  location                           = var.location
+  tags                               = var.tags
+  modules_resource_group_name_suffix = var.modules_resource_group_name_suffix
+  entra_id_group_name                = var.entra_id_group_name
+
+  depends_on = [azurerm_resource_group.mentorklub]
+
+  # Only create resources if the module is enabled
+  count = var.modules_enabled["app_service_plan"] ? 1 : 0
 }
