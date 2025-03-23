@@ -94,6 +94,7 @@ module "ai" {
   modules_resource_group_name_suffix = var.modules_resource_group_name_suffix
   local_doc_directory_path           = var.local_doc_directory_path
   rag_storage_account_name           = module.storage_account[0].storage_account_name
+  entra_id_group_name                = var.entra_id_group_name
 
   depends_on = [azurerm_resource_group.mentorklub]
 
