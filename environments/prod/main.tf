@@ -103,8 +103,8 @@ module "ai" {
 }
 
 # Azure Container Registry Module
-module "arc" {
-  source                             = "../../modules/arc"
+module "acr" {
+  source                             = "../../modules/acr"
   subscription_id                    = var.subscription_id
   main_resource_group_name           = var.main_resource_group_name
   location                           = var.location
@@ -115,7 +115,7 @@ module "arc" {
   depends_on = [azurerm_resource_group.mentorklub]
 
   # Only create resources if the module is enabled
-  count = var.modules_enabled["arc"] ? 1 : 0
+  count = var.modules_enabled["acr"] ? 1 : 0
 }
 
 # Database Module

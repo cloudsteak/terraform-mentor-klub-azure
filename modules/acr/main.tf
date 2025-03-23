@@ -5,7 +5,7 @@ resource "azurerm_resource_group" "acr" {
 }
 
 # Add resource lock on Docker resource group
-resource "azurerm_management_lock" "mentorklub_arc_rg_lock" {
+resource "azurerm_management_lock" "mentorklub_acr_rg_lock" {
   name       = "DeleteLockMentorKlubDockerRG"
   scope      = azurerm_resource_group.acr.id
   lock_level = "CanNotDelete"
