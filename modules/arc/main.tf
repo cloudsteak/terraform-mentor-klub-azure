@@ -24,7 +24,7 @@ data "azuread_group" "mentorklub_user_group_name" {
 
 # Assign the Contributor role to the Entradata ID Group
 resource "azurerm_role_assignment" "mentorklub_user_group_name" {
-  scope                = azurerm_resource_group.arc.id
+  scope                = azurerm_resource_group.acr.id
   role_definition_name = "Contributor"
   principal_id         = replace(data.azuread_group.mentorklub_user_group_name.id, "//groups//", "")
 }
