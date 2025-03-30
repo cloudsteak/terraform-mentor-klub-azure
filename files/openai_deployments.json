@@ -3,7 +3,7 @@
     "name" : "gpt-35-turbo",
     "model_format" : "OpenAI",
     "model_name" : "gpt-35-turbo",
-    "model_version" : "1106",
+    "model_version" : "0125",
     "scale_type" : "Standard",
     "capacity" : 200
   },
@@ -11,7 +11,7 @@
     "name" : "gpt-4o",
     "model_format" : "OpenAI",
     "model_name" : "gpt-4o",
-    "model_version" : "2024-05-13",
+    "model_version" : "2024-11-20",
     "scale_type" : "Standard",
     "capacity" : 45
   },
