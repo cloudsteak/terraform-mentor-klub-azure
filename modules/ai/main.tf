@@ -73,7 +73,7 @@ resource "azurerm_search_service" "ai_search" {
   location            = var.location
   sku                 = "basic"
 
-  local_authentication_enabled = false
+  local_authentication_enabled = true
   authentication_failure_mode  = "http403"
 }
 
